@@ -11,13 +11,15 @@ export default function Login({ closeModal, toggleModalType }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin = async (e) => {
+    const API_URL = import.meta.env.VITE_API_URL;
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+      `${API_URL}/api/auth/login`,
+
         { email, password },
         { withCredentials: true }
       );

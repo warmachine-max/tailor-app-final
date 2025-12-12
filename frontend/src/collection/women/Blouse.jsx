@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { FaDollarSign, FaTag, FaSort, FaAngleDown, FaAngleUp } from 'react-icons/fa'; 
 
 export default function Blouse() {
+      const API_URL = import.meta.env.VITE_API_URL;
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -44,7 +45,7 @@ export default function Blouse() {
         const fetchItems = async () => {
             try {
                 // Correct API endpoint for blouses
-                const res = await fetch("http://localhost:5000/api/women/blouses");
+              const res = await fetch(`${API_URL}/api/women/blouses`);
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || "Failed to fetch blouses");
                 if (mounted) setItems(data.blouses || []);
@@ -117,7 +118,7 @@ export default function Blouse() {
             if (imageFile) formData.append("image", imageFile);
 
             // Correct API endpoint for creating a blouse
-            const res = await fetch("http://localhost:5000/api/women/blouse/create", {
+            const res = await fetch(`${API_URL}/api/women/blouse/create`, {
                 method: "POST",
                 credentials: "include",
                 body: formData,
@@ -139,7 +140,7 @@ export default function Blouse() {
         if (!window.confirm("Are you sure you want to delete this blouse?")) return;
         try {
             // Correct API endpoint for deleting a blouse
-            const res = await fetch(`http://localhost:5000/api/women/blouse/${id}`, {
+          const res = await fetch(`${API_URL}/api/women/blouse/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });
@@ -165,7 +166,7 @@ export default function Blouse() {
         if (!isCustomer) return;
         setBookingSubmitting(true);
         try {
-            const res = await fetch("http://localhost:5000/api/booking/book", {
+          const res = await fetch(`${API_URL}/api/booking/book`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },

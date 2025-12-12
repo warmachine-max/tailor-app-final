@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { FaDollarSign, FaTag, FaSort, FaAngleDown, FaAngleUp, FaTshirt } from 'react-icons/fa'; // Added FaTshirt icon
 
 export default function Kurta() {
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -42,7 +44,7 @@ export default function Kurta() {
         let mounted = true;
         const fetchKurtas = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/men/kurtas");
+               const res = await fetch(`${API_URL}/api/men/kurtas`);
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || "Failed to fetch kurtas");
                 if (mounted) setItems(data.kurtas || []);
@@ -94,10 +96,9 @@ export default function Kurta() {
                 return 'Sort: Newest First';
         }
     };
-    /* -------------------------------------------------------- */
 
-
-    /* ------------------ ADMIN FUNCTIONS ------------------ */
+    /* --------------------------------------------------------*/
+    /* ------------------ ADMIN FUNCTIONS ------------------*/
     const handleImageSelect = (file) => {
         if (!file) return;
         setImageFile(file);
@@ -115,7 +116,7 @@ export default function Kurta() {
             formData.append("price", price || "");
             if (imageFile) formData.append("image", imageFile);
 
-            const res = await fetch("http://localhost:5000/api/men/kurta/create", {
+          const res = await fetch(`${API_URL}/api/men/kurta/create`, {
                 method: "POST",
                 credentials: "include",
                 body: formData,
@@ -143,7 +144,7 @@ export default function Kurta() {
         if (!isAdmin) return;
         if (!window.confirm("Are you sure you want to delete this kurta?")) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/men/kurta/${id}`, {
+            const res = await fetch(`${API_URL}/api/men/kurta/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });
@@ -171,7 +172,7 @@ export default function Kurta() {
         if (!isCustomer) return;
         setBookingSubmitting(true);
         try {
-            const res = await fetch("http://localhost:5000/api/booking/book", {
+           const res = await fetch(`${API_URL}/api/booking/book`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },

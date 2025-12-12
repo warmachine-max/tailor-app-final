@@ -6,8 +6,8 @@ import {
 } from 'react-icons/fa';
 
 // 🚨 IMPORTANT: CONFIGURE YOUR API ENDPOINT HERE 🚨
-const API_BASE_URL = 'http://localhost:5000'; // Replace with your domain in production
-const API_ENDPOINT = `${API_BASE_URL}/api/consultations/book`; 
+const API_URL = import.meta.env.VITE_API_URL;
+const API_ENDPOINT = `${API_URL}/api/consultations/book`; 
 
 // --- Tailwind Utility Class Definitions (Previously in non-working <style> block) ---
 // Note: We define these as JS strings here for reference, but use them directly in JSX below.

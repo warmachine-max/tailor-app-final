@@ -8,11 +8,12 @@ export const AuthContext = createContext();
 // Private internal function to fetch the user (memoized)
 // setContextLoading = true when we want to set the global 'loading' state (initial load/refetch)
 const useAuthFetcher = (setUser, setLoading) => {
+  const API_URL = import.meta.env.VITE_API_URL;
   return useCallback(async (setContextLoading = false) => {
     if (setContextLoading) setLoading(true);
 
     try {
-      const res = await axios.get("http://localhost:5000/api/auth/user", {
+        const res = await axios.get(`${API_URL}/api/auth/user`, {
         withCredentials: true,
       });
 
@@ -71,18 +72,20 @@ export const AuthProvider = ({ children }) => {
   // -------------------------------
   // 4. LOGOUT
   // -------------------------------
-  const logout = async () => {
-    try {
-      await axios.post(
-        "http://localhost:5000/api/auth/logout",
-        {},
-        { withCredentials: true }
-      );
-      setUser(null);
-    } catch (err) {
-      console.error("Logout failed:", err);
-    }
-  };
+ const logout = async () => {
+  const API_URL = import.meta.env.VITE_API_URL;
+  try {
+    await axios.post(
+      `${API_URL}/api/auth/logout`,
+      {}, // empty body since POST needs a parameter
+      { withCredentials: true } // send cookies
+    );
+    setUser(null);
+  } catch (err) {
+    console.error("Logout failed:", err);
+  }
+};
+
 
   return (
     <AuthContext.Provider

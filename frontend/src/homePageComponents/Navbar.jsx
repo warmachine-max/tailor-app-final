@@ -60,12 +60,12 @@ export default function Navbar({ setAuthModal }) {
         }
         
         const fetchCartCount = async () => {
+            const API_URL = import.meta.env.VITE_API_URL;
             try {
                 const endpoint =
                     user.role === "admin"
-                        ? "http://localhost:5000/api/booking/all"
-                        : "http://localhost:5000/api/booking/user";
-
+                       ? `${API_URL}/api/booking/all`
+                       : `${API_URL}/api/booking/user`;  
                 const res = await fetch(endpoint, { credentials: "include" });
                 const data = await res.json();
                 if (res.ok) {
@@ -77,12 +77,14 @@ export default function Navbar({ setAuthModal }) {
         };
 
         const fetchConsultationCount = async () => {
+            const API_URL = import.meta.env.VITE_API_URL;
             if (user.role !== 'admin') {
                 setConsultationCount(0);
                 return;
             }
             try {
-                const CONSULTATION_URL = "http://localhost:5000/api/consultations";
+              const CONSULTATION_URL = `${API_URL}/api/consultations`;
+
                 const res = await fetch(CONSULTATION_URL, { credentials: "include" });
                 const data = await res.json();
 

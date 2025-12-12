@@ -9,10 +9,10 @@ import {
 
 // 🚨 IMPORTANT: CONFIGURE YOUR API ENDPOINTS 🚨
 // Ensure your backend is running on this port and endpoint structure
-const API_BASE_URL = 'http://localhost:5000'; 
-const FETCH_URL = `${API_BASE_URL}/api/consultations`;
-const STATUS_UPDATE_URL = (id) => `${API_BASE_URL}/api/consultations/${id}/status`;
-const DELETE_URL = (id) => `${API_BASE_URL}/api/consultations/${id}`;
+const API_URL = import.meta.env.VITE_API_URL;
+const FETCH_URL = `${API_URL}/api/consultations`;
+const STATUS_UPDATE_URL = (id) => `${API_URL}/api/consultations/${id}/status`;
+const DELETE_URL = (id) => `${API_URL}/api/consultations/${id}`;
 
 // --- MAIN COMPONENT ---
 const ConsultationBookingHistoryPage = () => {

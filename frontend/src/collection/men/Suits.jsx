@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaTag, FaPlus, FaTrashAlt, FaTshirt, FaSort } from 'react-icons/fa'; 
 
 export default function Suit() {
+      const API_URL = import.meta.env.VITE_API_URL;
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -40,7 +41,7 @@ export default function Suit() {
         let mounted = true;
         const fetchItems = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/men/suits");
+                const res = await fetch(`${API_URL}/api/men/suits`);
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || "Failed to fetch suits");
                 if (mounted) setItems(data.suits || []);
@@ -94,7 +95,7 @@ export default function Suit() {
             formData.append("price", price || "");
             if (imageFile) formData.append("image", imageFile);
 
-            const res = await fetch("http://localhost:5000/api/men/suit/create", {
+            const res = await fetch(`${API_URL}/api/men/suit/create`, {
                 method: "POST",
                 credentials: "include",
                 body: formData,
@@ -125,7 +126,7 @@ export default function Suit() {
         if (!isAdmin) return;
         if (!window.confirm("Are you sure you want to delete this suit?")) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/men/suit/${id}`, {
+         const res = await fetch(`${API_URL}/api/men/suit/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });
@@ -154,7 +155,7 @@ export default function Suit() {
         if (!isCustomer) return;
         setBookingSubmitting(true);
         try {
-            const res = await fetch("http://localhost:5000/api/booking/book", {
+           const res = await fetch(`${API_URL}/api/booking/book`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },

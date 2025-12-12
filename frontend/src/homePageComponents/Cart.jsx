@@ -426,14 +426,14 @@ export default function Cart() {
 
     // --- Core Data Fetching ---
     const fetchCart = async () => {
+        const API_URL = import.meta.env.VITE_API_URL;
         if (!user) return;
         try {
             setLoading(true);
             const endpoint =
                 user.role === "admin"
-                    ? "http://localhost:5000/api/booking/all"
-                    : "http://localhost:5000/api/booking/user";
-
+                     ? `${API_URL}/api/booking/all`
+                     : `${API_URL}/api/booking/user`;
             const res = await fetch(endpoint, { credentials: "include" });
             const data = await res.json();
             if (res.ok) setCartItems(data);
@@ -531,6 +531,7 @@ export default function Cart() {
     // --- Status Update / Delete / Return Handlers ---
 
     const initiateReturn = async (id) => {
+        const API_URL = import.meta.env.VITE_API_URL;
         const returnReason = prompt(`Please provide a brief reason for returning booking ID ${id.substring(0, 8)}:`, "Wrong size/Product damaged/Changed mind");
 
         if (!returnReason) return;
@@ -539,7 +540,7 @@ export default function Cart() {
 
         try {
             setUpdating(prev => ({ ...prev, [id]: true }));
-            const res = await fetch(`http://localhost:5000/api/booking/${id}/return`, {
+            const res = await fetch(`${API_URL}/api/booking/${id}/return`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
@@ -570,6 +571,7 @@ export default function Cart() {
 
 
     const updateStatus = async (id, status) => {
+        const API_URL = import.meta.env.VITE_API_URL;
         const statusInfo = STATUS_MAP[status]?.label || status;
         const adminMessage =
             status === "rejected" || status === "confirmed" || status === "return_rejected" || status === "return_approved"
@@ -585,7 +587,7 @@ export default function Cart() {
 
         try {
             setUpdating(prev => ({ ...prev, [id]: true }));
-            const res = await fetch(`http://localhost:5000/api/booking/${id}/status`, {
+            const res = await fetch(`${API_URL}/api/booking/${id}/status`, {
                 method: "PATCH",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
@@ -613,11 +615,12 @@ export default function Cart() {
     };
 
     const deleteBooking = async (id) => {
+        const API_URL = import.meta.env.VITE_API_URL;
         if (!window.confirm("SYSTEM WARNING: Are you sure you want to permanently delete this booking record? This action is irreversible.")) return;
 
         try {
             setUpdating(prev => ({ ...prev, [id]: true }));
-            const res = await fetch(`http://localhost:5000/api/booking/${id}/delete`, {
+         const res = await fetch(`${API_URL}/api/booking/${id}/delete`, {
                 method: "DELETE",
                 credentials: "include",
             });

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { FaDollarSign, FaTag, FaSort, FaAngleDown, FaAngleUp } from 'react-icons/fa'; 
 
 export default function Salwar() {
+      const API_URL = import.meta.env.VITE_API_URL;
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -42,7 +43,7 @@ export default function Salwar() {
         let mounted = true;
         const fetchItems = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/women/salwars");
+               const res = await fetch(`${API_URL}/api/women/salwars`);
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || "Failed to fetch salwars");
                 if (mounted) setItems(data.salwars || []);
@@ -115,7 +116,7 @@ export default function Salwar() {
             formData.append("price", price);
             if (imageFile) formData.append("image", imageFile);
 
-            const res = await fetch("http://localhost:5000/api/women/salwar/create", {
+         const res = await fetch(`${API_URL}/api/women/salwar/create`, {
                 method: "POST",
                 credentials: "include",
                 body: formData,
@@ -136,7 +137,7 @@ export default function Salwar() {
         if (!isAdmin) return;
         if (!window.confirm("Are you sure you want to delete this salwar?")) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/women/salwar/${id}`, {
+          const res = await fetch(`${API_URL}/api/women/salwar/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });
@@ -162,7 +163,7 @@ export default function Salwar() {
         if (!isCustomer) return;
         setBookingSubmitting(true);
         try {
-            const res = await fetch("http://localhost:5000/api/booking/book", {
+          const res = await fetch(`${API_URL}/api/booking/book`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },

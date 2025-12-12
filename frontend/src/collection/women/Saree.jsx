@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaDollarSign, FaTag, FaSort } from 'react-icons/fa'; // Added FaSort for generic sort icon
 
 export default function Saree() {
+      const API_URL = import.meta.env.VITE_API_URL;
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -37,7 +38,7 @@ export default function Saree() {
         let mounted = true;
         const fetchItems = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/women/sarees");
+            const res = await fetch(`${API_URL}/api/women/sarees`);
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || "Failed to fetch sarees");
                 if (mounted) setItems(data.sarees || []);
@@ -90,7 +91,7 @@ export default function Saree() {
             formData.append("price", price);
             if (imageFile) formData.append("image", imageFile);
 
-            const res = await fetch("http://localhost:5000/api/women/saree/create", {
+               const res = await fetch(`${API_URL}/api/women/saree/create`, {
                 method: "POST",
                 credentials: "include",
                 body: formData,
@@ -113,7 +114,7 @@ export default function Saree() {
         if (!window.confirm("Delete this saree?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/women/saree/${id}`, {
+            const res = await fetch(`${API_URL}/api/women/saree/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });
@@ -139,7 +140,7 @@ export default function Saree() {
 
         setBookingSubmitting(true);
         try {
-            const res = await fetch("http://localhost:5000/api/booking/book", {
+          const res = await fetch(`${API_URL}/api/booking/book`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },

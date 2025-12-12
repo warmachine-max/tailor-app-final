@@ -13,13 +13,15 @@ export default function Signup({ closeModal }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignup = async (e) => {
+    const API_URL = import.meta.env.VITE_API_URL;
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/signup",
+        `${API_URL}/api/auth/signup`,
+
         { name, email, password },
         { withCredentials: true }
       );
