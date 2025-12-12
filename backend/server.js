@@ -56,5 +56,9 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
+console.log("Backend server is running!");
+console.log("Verification log:",);
+
+
 // app.listen(3000);   <-- example of commenting a lines
 
