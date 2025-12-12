@@ -1,29 +1,39 @@
+// server.js
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
-import cors from 'cors';   // <-- ADD THIS
+import cors from 'cors';
 
 import authRoutes from './routes/authRoutes.js';
 import menRoutes from './routes/menRoutes.js';
 import womenRoutes from './routes/womenRoutes.js';
-
-import bookinRoutes from './routes/bookingRoutes.js';
-
+import bookingRoutes from './routes/bookingRoutes.js';
 import consultationRoutes from './routes/consultationRoutes.js';
 
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-import { v2 as cloudinary } from 'cloudinary';
-import './config/cloudinary.js';
+import './config/cloudinary.js'; // Cloudinary config
 
 dotenv.config();
 
 const app = express();
 
-// ⭐ Enable CORS here
+// ⭐ Allowed origins for CORS
+const allowedOrigins = [
+  'http://localhost:5173',                  // local frontend
+  'https://tailor-app-final.vercel.app'     // deployed frontend
+];
+
 app.use(
   cors({
-   origin: "https://tailor-app-final.vercel.app",
+    origin: function(origin, callback) {
+      if (!origin) return callback(null, true); // allow Postman or server-to-server requests
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = 'CORS policy does not allow access from the specified origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   })
 );
@@ -32,9 +42,10 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Cookie parser
 app.use(cookieParser());
 
-// DB connection
+// MongoDB connection
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch(err => console.log("❌ DB connection error:", err));
@@ -43,31 +54,18 @@ mongoose.connect(process.env.MONGO_URL)
 app.use('/api/auth', authRoutes);
 app.use('/api/men', menRoutes);
 app.use('/api/women', womenRoutes);
-
-app.use('/api/booking', bookinRoutes);
-
+app.use('/api/booking', bookingRoutes);
 app.use('/api/consultations', consultationRoutes);
 
-
+// Error middlewares
 app.use(notFound);
 app.use(errorHandler);
 
-// Start Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on poort ${PORT}`));
-
+// Test route
 app.get("/", (req, res) => {
   res.send("Backend is live ✅");
 });
 
-
-console.log("Backend server is running!");
-console.log("Verification log:",);
-
-
-// app.listen(3000);   <-- example of commenting a lines
-
-// git add .
-//  git commit -m "your commit message"
-//  git push origin main
-
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
