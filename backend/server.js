@@ -23,7 +23,7 @@ const app = express();
 // ⭐ Enable CORS here
 app.use(
   cors({
-    origin: "http://localhost:5173",
+   origin: "https://tailor-app-final.vercel.app",
     credentials: true,
   })
 );
