@@ -67,3 +67,6 @@ console.log("Verification log:",);
 
 // app.listen(3000);   <-- example of commenting a lines
 
+//  git commit -m "Commented a line in server.js for testing"
+//  git push origin main
+
