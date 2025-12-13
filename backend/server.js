@@ -35,6 +35,7 @@ app.use(
       }
     },
     credentials: true, // allow cookies/auth headers
+    methods:["GET","POST","PUT","DELETE","PATCH"]
   })
 );
 
