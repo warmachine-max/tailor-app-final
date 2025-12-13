@@ -5,39 +5,56 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
+// Import Routes
 import authRoutes from './routes/authRoutes.js';
 import menRoutes from './routes/menRoutes.js';
 import womenRoutes from './routes/womenRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import consultationRoutes from './routes/consultationRoutes.js';
 
+// Import Middleware
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-import './config/cloudinary.js'; // Cloudinary config
+
+// Import Configuration
+import './config/cloudinary.js'; 
 
 dotenv.config();
 
 const app = express();
 
-// ⭐ Allowed origins for CORS
-const allowedOrigins = [
-  // 'http://localhost:5173',                  // local frontend
-  'https://tailor-app-final.vercel.app'     // deployed frontend
-];
+// --- CORS Configuration ---
+// Get the allowed origin from environment variables
+// Use '||' to provide a fallback, though it's best to set the variable on Render.
+// For production, this should be 'https://tailor-app-final.vercel.app'
+const allowedOrigin = process.env.CLIENT_ORIGIN || 'https://tailor-app-final.vercel.app'; 
+
 
 app.use(
   cors({
     origin: function(origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman or server-to-server requests
-      if (allowedOrigins.includes(origin)) {
+      // 1. Allow if no origin is present (e.g., Postman, same-server requests)
+      if (!origin) return callback(null, true); 
+
+      // 2. Check if the origin matches the allowed single URL
+      if (origin === allowedOrigin) {
         return callback(null, true);
-      } else {
-        return callback(new Error('CORS policy does not allow this origin.'), false);
+      } 
+      
+      // 3. Fallback for testing/development (Optional - remove for strict production)
+      // Check if the current environment is development and allow localhost:5173
+      if (process.env.NODE_ENV === 'development' && origin.includes('localhost:5173')) {
+          return callback(null, true);
       }
+
+      // 4. Block all other origins
+      return callback(new Error(`CORS policy does not allow this origin: ${origin}`), false);
     },
-    credentials: true, // allow cookies/auth headers
-    methods:["GET","POST","PUT","DELETE","PATCH"]
+    credentials: true, // Crucial for sending cookies/JWTs
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   })
 );
+// --- End CORS Configuration ---
+
 
 // Body parsers
 app.use(express.json());
