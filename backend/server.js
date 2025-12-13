@@ -20,7 +20,7 @@ const app = express();
 
 // ⭐ Allowed origins for CORS
 const allowedOrigins = [
-  'http://localhost:5173',                  // local frontend
+  // 'http://localhost:5173',                  // local frontend
   'https://tailor-app-final.vercel.app'     // deployed frontend
 ];
 
