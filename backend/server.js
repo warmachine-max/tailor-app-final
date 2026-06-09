@@ -26,7 +26,7 @@ const app = express();
 // Get the allowed origin from environment variables
 // Use '||' to provide a fallback, though it's best to set the variable on Render.
 // For production, this should be 'https://tailor-app-final.vercel.app'
-const allowedOrigin = process.env.CLIENT_ORIGIN || 'https://tailor-app-final.vercel.app'; 
+const allowedOrigin = process.env.CLIENT_ORIGIN || 'https://tailor-app-final.vercel.app' ; 
 
 
 app.use(

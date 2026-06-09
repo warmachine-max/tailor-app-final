@@ -7,13 +7,14 @@ import {
     FaSignInAlt,
     FaUserPlus,
     FaSeedling,
-    FaHistory, // Icon for Consultations Dashboard
+    FaHistory, 
     FaClipboardList
 } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
-// --- Custom Component for Category Dropdown Items ---
+// MOVE THIS COMPLETELY AWAY/OUTSIDE OF ANY RENDER LOGIC
+// Better yet, export it from a different file entirely if you can!
 const CategoryDropdownItem = ({ to, title, subtitle, onClick }) => (
     <Link
         to={to}
@@ -42,7 +43,6 @@ export default function Navbar({ setAuthModal }) {
     const womenRef = useRef(null);
     const userRef = useRef(null);
 
-    // --- Scroll Effect (Sticky Navbar) ---
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
@@ -51,7 +51,6 @@ export default function Navbar({ setAuthModal }) {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // --- Fetch Counts Effect ---
     useEffect(() => {
         if (!user) {
             setCartCount(0);
@@ -64,8 +63,8 @@ export default function Navbar({ setAuthModal }) {
             try {
                 const endpoint =
                     user.role === "admin"
-                       ? `${API_URL}/api/booking/all`
-                       : `${API_URL}/api/booking/user`;  
+                        ? `${API_URL}/api/booking/all`
+                        : `${API_URL}/api/booking/user`;  
                 const res = await fetch(endpoint, { credentials: "include" });
                 const data = await res.json();
                 if (res.ok) {
@@ -84,12 +83,10 @@ export default function Navbar({ setAuthModal }) {
             }
             try {
               const CONSULTATION_URL = `${API_URL}/api/consultations`;
-
                 const res = await fetch(CONSULTATION_URL, { credentials: "include" });
                 const data = await res.json();
 
                 if (res.ok) {
-                    // Filter for only 'PENDING_CONFIRMATION'
                     const pendingCount = data.filter(c => c.status === 'PENDING_CONFIRMATION').length;
                     setConsultationCount(pendingCount);
                 } else {
@@ -104,7 +101,6 @@ export default function Navbar({ setAuthModal }) {
         fetchConsultationCount(); 
     }, [user]);
 
-    // --- Close dropdowns on outside click (Unchanged) ---
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (menRef.current && !menRef.current.contains(event.target))
@@ -118,7 +114,6 @@ export default function Navbar({ setAuthModal }) {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // --- Utility functions ---
     const linkClass = "hover:text-indigo-600 transition duration-200 py-1 border-b-2 border-transparent hover:border-indigo-600";
     const navStyle = `w-full fixed top-0 left-0 z-50 transition-all duration-300 py-3 md:py-4 ${
         isScrolled ? "bg-white shadow-xl" : "bg-white/95 backdrop-blur-sm shadow-md"
@@ -141,7 +136,6 @@ export default function Navbar({ setAuthModal }) {
         setOpenUser(false);
     };
 
-
     return (
         <nav className={navStyle}>
             <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -155,10 +149,8 @@ export default function Navbar({ setAuthModal }) {
                     CHRUPS
                 </Link>
 
-                {/* LINKS (MAIN NAVIGATION AREA) */}
+                {/* LINKS */}
                 <ul className="hidden lg:flex items-center gap-6 font-medium text-gray-700">
-                    
-                    {/* ... Men, Women, Fabrics links ... (Keep these) */}
                     <li className="relative group" ref={menRef} onMouseEnter={() => setOpenMen(true)} onMouseLeave={() => setOpenMen(false)}>
                         <p className={`cursor-pointer flex items-center gap-1 px-2 ${linkClass} ${openMen ? 'text-indigo-600 border-indigo-600' : ''}`}>
                             Men <FaCaretDown className={`transition-transform duration-200 ${openMen ? 'rotate-180' : 'rotate-0'}`} />
@@ -196,7 +188,6 @@ export default function Navbar({ setAuthModal }) {
                         </Link>
                     </li>
                     
-                    {/* **NEW LOCATION FOR ADMIN CONSULTATION LINK** */}
                     {user && user.role === 'admin' && (
                         <li>
                             <Link 
@@ -205,7 +196,6 @@ export default function Navbar({ setAuthModal }) {
                                 onClick={closeAllDropdowns}
                             >
                                 <FaHistory size={16} /> Consult Dashboard
-                                {/* Display the count badge here */}
                                 {consultationCount > 0 && (
                                     <span className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold shadow-lg ring-2 ring-white">
                                         {consultationCount > 9 ? "9+" : consultationCount}
@@ -214,7 +204,6 @@ export default function Navbar({ setAuthModal }) {
                             </Link>
                         </li>
                     )}
-                    {/* END NEW LOCATION */}
 
                     <li>
                         <Link to="/about" className={linkClass} onClick={closeAllDropdowns}>About Us</Link>
@@ -224,20 +213,14 @@ export default function Navbar({ setAuthModal }) {
                     </li>
                 </ul>
 
-                {/* RIGHT SIDE: CART + USER */}
+                {/* RIGHT SIDE */}
                 <div className="flex items-center gap-5 md:gap-6">
-                    
-                    {/* CART ICON */}
                     {user && (
                         <div
                             className="relative cursor-pointer text-gray-700 hover:text-indigo-600 transition"
                             onClick={() => { navigate("/cart"); closeAllDropdowns(); }}
                         >
-                            {user && user.role === 'admin' ? (
-                                <FaClipboardList size={26} />
-                            ) : (
-                                <FaShoppingCart size={26} />
-                            )}
+                            {user.role === 'admin' ? <FaClipboardList size={26} /> : <FaShoppingCart size={26} />}
                             {cartCount > 0 && (
                                 <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold animate-ping-once shadow-lg">
                                     {cartCount > 9 ? "9+" : cartCount}
@@ -246,7 +229,6 @@ export default function Navbar({ setAuthModal }) {
                         </div>
                     )}
 
-                    {/* USER MENU */}
                     <div className="relative" ref={userRef}>
                         <button
                             className="flex items-center gap-2 cursor-pointer p-2 rounded-full transition duration-200 bg-indigo-100 hover:bg-indigo-200 text-indigo-800"
@@ -266,18 +248,6 @@ export default function Navbar({ setAuthModal }) {
                                         <p className="font-bold text-gray-800 px-3 py-1 border-b mb-1">
                                             {user.name} ({user.role.toUpperCase()})
                                         </p>
-                                        
-                                        {/* Standard User Profile Link */}
-                                        {/* <Link to="/profile" 
-                                            className={`flex items-center gap-2 p-3 rounded-lg hover:bg-indigo-50 text-gray-700 transition ${user.role !== 'admin' ? 'font-semibold' : ''}`}
-                                            onClick={() => setOpenUser(false)}
-                                        >
-                                            <FaUserCircle className="w-5 h-5" /> My Profile
-                                        </Link> */}
-                                        
-                                        {/* ADMIN LINK REMOVED FROM HERE */}
-
-                                        {/* Logout Link */}
                                         <button
                                             className="flex items-center gap-2 p-3 rounded-lg hover:bg-red-50 text-red-600 w-full text-left transition"
                                             onClick={handleLogout}
@@ -287,7 +257,6 @@ export default function Navbar({ setAuthModal }) {
                                     </>
                                 ) : (
                                     <>
-                                        {/* Login / Sign Up */}
                                         <button
                                             className="flex items-center gap-2 p-3 rounded-lg hover:bg-indigo-50 text-indigo-600 w-full text-left transition font-semibold"
                                             onClick={() => handleAuth("login")}
@@ -308,7 +277,6 @@ export default function Navbar({ setAuthModal }) {
                 </div>
             </div>
             
-            {/* CSS Animation (Inline for component portability) */}
             <style>
                 {`
                     @keyframes fadeIn {
